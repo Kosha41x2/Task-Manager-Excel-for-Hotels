@@ -1,9 +1,6 @@
 function myFunction() {
-  toRead = new Cell("A", 1);
-  toRead2 = new Cell("A", 10)
-  toRead
-  console.log(readCell(toRead));
+  toRead = new Cell("C", 2);
+  toRead2 = new Cell("I", 7);
 
-  var values = readCells(toRead, toRead2);
-  console.log(values);
+  console.log(findTodaysDateCol());
 }
