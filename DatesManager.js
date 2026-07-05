@@ -1,7 +1,7 @@
 var today = new Date();
 today = today.toLocaleDateString();
 
-function findTodaysDateCol() {
+function findTodaysDateCol(datesRow) {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
 
   let found = false;
@@ -19,5 +19,11 @@ function findTodaysDateCol() {
       }
     }
   }
-  return col;
+  
+  if(found){
+    return col;
+  }
+  else {
+    throw new Error("Today's date wasn't found in the row: " + datesRow);
+  }
 }
