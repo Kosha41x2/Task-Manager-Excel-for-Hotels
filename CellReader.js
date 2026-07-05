@@ -86,7 +86,37 @@ function getRow(row, first = "A", max) {
   return cells;
 }
 
-//Evitar usar debido a la carga computacional
+function getRowUntilBlank(row, first = "A", blanksCount = 1) {
+
+  if (typeof first !== 'string') {
+    throw new Error(`Error en getRow: Los límites de las columnas deben ser letras (Strings). Se recibió first: '${first}'.`);
+  }
+
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const maxCols = sheet.getMaxColumns();
+  const toReturn = new RangeMatrix([[]]);
+  let col = letterToColumn(first);
+  let counter = 0;
+
+  do {
+    let cell = getSingleCell(new Cell(columnToLetter(col), row))
+    let isCellBlank = cell.isBlank();
+
+    if (isCellBlank) {
+      counter++;
+    } else {
+      toReturn.pushValue(0 ,cell);
+      counter = 0;
+    }
+    if (counter < blanksCount && col < maxCols) {
+      col++;
+    }
+
+  } while (counter < blanksCount && col < maxCols);
+
+  return toReturn;
+}
+
 function getFullRow(row, first = "A"){
   if (typeof first !== 'string') {
     throw new Error(`Error en getFullRow: La columna de inicio debe ser una letra. Se recibió: '${first}'.`);
@@ -119,9 +149,41 @@ function getColumn(colum, first = 1, max) {
   return cells;
 }
 
+function getColumnUntilBlank(colum, first = 1, blanksCount = 1) {
+  if (typeof colum !== 'string') {
+    throw new Error(`Error en getColumnUntilBlank: La columna debe ser una letra (String). Se recibió colum: '${colum}'.`);
+  }
+
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const maxRows = sheet.getMaxRows();
+  const cells = []; 
+  
+  let currentRow = first;
+  let counter = 0;
+
+  do {
+    let cell = getSingleCell(new Cell(colum, currentRow));
+    let isCellBlank = cell.isBlank();
+
+    if (isCellBlank) {
+      counter++;
+    } else {
+      counter = 0;
+    }
+
+    cells.push([cell]); 
+
+    if (counter < blanksCount && currentRow < maxRows) {
+      currentRow++;
+    }
+
+  } while (counter < blanksCount && currentRow < maxRows);
+
+  return new RangeMatrix(cells);
+}
+
 //Evitar usar debido a la carga computacional
 function getFullCol(col, first = 1){
-  // 5. Control de errores delegado
   if (typeof col !== 'string') {
     throw new Error(`Error en getFullCol: La columna debe ser una letra. Se recibió: '${col}'.`);
   }

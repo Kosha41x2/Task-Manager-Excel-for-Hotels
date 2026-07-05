@@ -44,4 +44,9 @@ class TaskList{
       return a.importance - b.importance
       });
   }
+
+  push(task){
+    this.list.push(task);
+    return this;
+  }
 }

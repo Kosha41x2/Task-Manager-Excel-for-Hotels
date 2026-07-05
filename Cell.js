@@ -26,4 +26,8 @@ class RangeMatrix {
   getValue(row, col){
     return this.matrix[row][col];
   }
+
+  pushValue(row, value){
+    this.matrix[row].push(value);
+  }
 }
