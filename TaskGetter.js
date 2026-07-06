@@ -50,12 +50,12 @@ function filterOnWeekDay(day, tasks){
     let task = tasks.getList()[j];
 
     if(typeof task.getWeekDays() == 'string'){
-      if(task.getWeekDays() == "all"){
+      if(task.getWeekDays() == everyday){
         filteredTask.push(task);
         continue;
       }
 
-      if(task.getWeekDays() == "custom"){
+      if(task.getWeekDays() == customDays){
         continue;
       }
     }
@@ -70,4 +70,19 @@ function filterOnWeekDay(day, tasks){
     }
   }
   return filteredTask;
+}
+
+function topTasks(tasks, maxTime){
+  let time = 0;
+  tasks.arrangeList();
+  const toppedTasks = new TaskList();
+  for(let i = 0; i < tasks.getList().length && time <= maxTime; i++){
+    let task = tasks.getList()[i];
+    time += task.getDuration();
+    if(time <= maxTime){
+      toppedTasks.push(task);
+    }
+  }
+
+  return toppedTasks;
 }

@@ -54,9 +54,9 @@ class TaskList{
   }
 
   arrangeList(){
-    this.list.sort((a, b) => {
-      return a.importance - b.importance
-      });
+    this.list = this.list.sort((a, b) => {
+      return b.importance - a.importance
+    });
   }
 
   push(task){

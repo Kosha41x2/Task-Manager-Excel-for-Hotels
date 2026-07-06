@@ -5,3 +5,7 @@ const columnLength = 40;
 const roomInfoFistCol = "A";
 const roomInfoLastCol = "B";
 
+const everyday = "all";
+const customDays = "custom";
+
+const tasksMaxTime = 240;
