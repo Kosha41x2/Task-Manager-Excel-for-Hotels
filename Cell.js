@@ -30,4 +30,8 @@ class RangeMatrix {
   pushValue(row, value){
     this.matrix[row].push(value);
   }
+
+  getMatrix(){
+    return this.matrix;
+  }
 }
