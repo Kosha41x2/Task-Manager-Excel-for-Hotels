@@ -10,3 +10,5 @@ const customDays = "custom";
 
 const tasksMaxTime = 240;
 const necessityImportance = 6;
+
+const jsonName = 'TAREAS_DEL_DIA';

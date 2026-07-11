@@ -88,3 +88,31 @@ function topTasks(tasks, maxTime){
 
   return toppedTasks;
 }
+
+function getTodaysTask(){
+  let checkOuts = checkOutRooms(todayDay, taskList.getList()[5]);
+  let filtered = filterOnWeekDay(todayDay, taskList);
+  filtered.concatenate(checkOuts);
+
+  return filtered;
+}
+
+function mergeLeftovers(todayTasksList, leftoverObjects) {
+  for (let i = 0; i < leftoverObjects.length; i++) {
+    let leftover = leftoverObjects[i]; 
+
+    let alreadyExists = todayTasksList.getList().find(task => task.getName() === leftover.name);
+
+    if (!alreadyExists) {
+      let escalatedPriority = leftover.importance + 1;
+      let carriedOverTask = new Task(leftover.name, leftover.duration, escalatedPriority, "carry_over");
+      
+      todayTasksList.push(carriedOverTask);
+    } else {
+      let escalatedPriority = leftover.importance + 1;
+      alreadyExists.setImportance(escalatedPriority);
+    }
+  }
+  
+  return todayTasksList;
+}

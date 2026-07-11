@@ -22,12 +22,24 @@
       button:hover { 
         background-color: #1b5e20; 
       }
+      /* --- New Delete Button Styles --- */
+      .delete-btn {
+        background-color: #d32f2f;
+        padding: 6px 10px;
+        width: auto;
+        float: right;
+        font-size: 12px;
+      }
+      .delete-btn:hover {
+        background-color: #b71c1c;
+      }
       .task-card { 
         border: 1px solid #ddd; 
         border-radius: 4px;
         padding: 10px; 
         margin-top: 10px;
         background-color: #fafafa;
+        overflow: hidden; /* Ensures the floating button stays inside the card */
       }
       .urgent { 
         color: #d32f2f; 
@@ -49,31 +61,41 @@
 
     <script>
       const NECESSITY_IMPORTANCE = 6; 
+      
+      // 1. Store tasks in memory so we can edit the list without reloading
+      let currentTasks = []; 
 
       function loadTasks() {
         document.getElementById('display').innerHTML = "<i>Buscando todas las tareas de hoy...</i>";
 
         google.script.run
-          .withSuccessHandler(renderTasks) 
+          .withSuccessHandler((data) => {
+             // Save the data locally before rendering
+             if (data) currentTasks = data;
+             renderTasks();
+          }) 
           .withFailureHandler(renderError)  
           .GenTasksForFront();              
       }
 
-      function renderTasks(data) {
-        if (!data || data.length === 0) {
+      // 2. Removed the 'data' parameter since it now reads from currentTasks
+      function renderTasks() {
+        if (!currentTasks || currentTasks.length === 0) {
           document.getElementById('display').innerHTML = "<b>No hay tareas que encajen en los parámetros hoy.</b>";
           return;
         }
 
         let html = "";
         
-        for (let i = 0; i < data.length; i++) {
-          let task = data[i];
+        for (let i = 0; i < currentTasks.length; i++) {
+          let task = currentTasks[i];
           
           let urgentBadge = task.importance >= NECESSITY_IMPORTANCE ? "<span class='urgent'>[NECESARIO]</span> " : "";
           
+          // 3. Injected the delete button and passed the task name to the function
           html += `
             <div class="task-card">
+              <button class="delete-btn" onclick="deleteTask('${task.name}')">Borrar</button>
               <div>${urgentBadge} <b>${task.name}</b></div>
               <div class="metadata">
                 ⏱️ Tiempo: ${task.duration} min | ⭐ Prioridad: ${task.importance}
@@ -83,6 +105,20 @@
         }
         
         document.getElementById('display').innerHTML = html;
+      }
+
+      // 4. New delete logic
+      function deleteTask(taskName) {
+        // Instantly remove the task from the local array
+        currentTasks = currentTasks.filter(task => task.name !== taskName);
+        
+        // Instantly redraw the screen (makes the app feel incredibly fast)
+        renderTasks();
+
+        // Silently tell the Google Apps Script backend to delete it from the JSON
+        google.script.run
+          .withFailureHandler(renderError)
+          .deleteTaskOnServer(taskName); // Make sure you have this function in your .gs file!
       }
 
       function renderError(error) {
