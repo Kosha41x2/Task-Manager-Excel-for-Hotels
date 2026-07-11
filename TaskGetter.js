@@ -7,15 +7,15 @@ function checkOutRoomRows(day){
 
   const rowsWithChanges = [];
 
-for(let i = 0; i < columnLength - defaultDatesRow - 1; i++){
-    let celdaHoy = todaysCol.getMatrix()[i][0];
-    let celdaManana = tomorrowsCol.getMatrix()[i][0];
+  for(let i = 0; i < columnLength - defaultDatesRow - 1; i++){
+    let todayCell = todaysCol.getMatrix()[i][0];
+    let tomorrowCell = tomorrowsCol.getMatrix()[i][0];
 
-    if(!celdaHoy.isBlank()) {
-      let valorHoy = celdaHoy.getDisplayValue().trim();
-      let valorManana = celdaManana.getDisplayValue().trim();
+    if(!todayCell.isBlank()) {
+      let todayValue = todayCell.getDisplayValue().trim();
+      let tomorrowValue = tomorrowCell.getDisplayValue().trim();
 
-      if(valorHoy !== valorManana){
+      if(todayValue !== tomorrowValue){
         rowsWithChanges.push(i + defaultDatesRow + 1);
       }
     }
@@ -76,10 +76,12 @@ function topTasks(tasks, maxTime){
   let time = 0;
   tasks.arrangeList();
   const toppedTasks = new TaskList();
-  for(let i = 0; i < tasks.getList().length && time <= maxTime; i++){
+  var isNeeded;
+  for(let i = 0; i < tasks.getList().length && (time <= maxTime || isNeeded); i++){
     let task = tasks.getList()[i];
+    isNeeded = task.getImportance() >= necessityImportance;
     time += task.getDuration();
-    if(time <= maxTime){
+    if(time <= maxTime || isNeeded){
       toppedTasks.push(task);
     }
   }

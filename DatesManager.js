@@ -3,8 +3,6 @@ today = todayDay.toLocaleDateString();
 weekDay = todayDay.getDay();
 
 function findDateCol(datesRow, date) {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-
   let found = false;
   let col = 0;
   let startingColN = letterToColumn(startingCol);

@@ -9,3 +9,4 @@ const everyday = "all";
 const customDays = "custom";
 
 const tasksMaxTime = 240;
+const necessityImportance = 6;

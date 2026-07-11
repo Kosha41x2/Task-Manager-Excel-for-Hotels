@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <style>
+      body { 
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        padding: 15px; 
+        color: #333; 
+      }
+      button { 
+        background-color: #2e7d32; 
+        color: white; 
+        border: none; 
+        padding: 12px; 
+        width: 100%; 
+        cursor: pointer; 
+        border-radius: 4px; 
+        font-weight: bold; 
+        font-size: 14px;
+      }
+      button:hover { 
+        background-color: #1b5e20; 
+      }
+      .task-card { 
+        border: 1px solid #ddd; 
+        border-radius: 4px;
+        padding: 10px; 
+        margin-top: 10px;
+        background-color: #fafafa;
+      }
+      .urgent { 
+        color: #d32f2f; 
+        font-weight: bold; 
+      }
+      .metadata {
+        font-size: 12px;
+        color: #666;
+        margin-top: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Gestor de Tareas</h2>
+    
+    <button onclick="loadTasks()">Generar Lista de Tareas</button>
+    
+    <div id="display" style="margin-top: 20px;"></div>
+
+    <script>
+      const NECESSITY_IMPORTANCE = 6; 
+
+      function loadTasks() {
+        document.getElementById('display').innerHTML = "<i>Buscando todas las tareas de hoy...</i>";
+
+        google.script.run
+          .withSuccessHandler(renderTasks) 
+          .withFailureHandler(renderError)  
+          .GenTasksForFront();              
+      }
+
+      function renderTasks(data) {
+        if (!data || data.length === 0) {
+          document.getElementById('display').innerHTML = "<b>No hay tareas que encajen en los parámetros hoy.</b>";
+          return;
+        }
+
+        let html = "";
+        
+        for (let i = 0; i < data.length; i++) {
+          let task = data[i];
+          
+          let urgentBadge = task.importance >= NECESSITY_IMPORTANCE ? "<span class='urgent'>[NECESARIO]</span> " : "";
+          
+          html += `
+            <div class="task-card">
+              <div>${urgentBadge} <b>${task.name}</b></div>
+              <div class="metadata">
+                ⏱️ Tiempo: ${task.duration} min | ⭐ Prioridad: ${task.importance}
+              </div>
+            </div>
+          `;
+        }
+        
+        document.getElementById('display').innerHTML = html;
+      }
+
+      function renderError(error) {
+        document.getElementById('display').innerHTML = "<b style='color:red'>Error crítico:</b> " + error.message;
+      }
+    </script>
+  </body>
+</html>

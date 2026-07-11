@@ -85,6 +85,10 @@ class TaskList{
     return this;
   }
 
+  eliminateTask(index){
+    this.list.splice(index);
+  }
+
   clone(){
     return new TaskList([...this.list]); 
   }

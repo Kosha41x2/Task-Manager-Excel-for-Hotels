@@ -1,3 +1,7 @@
+
+const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+const sheet = spreadsheet.getActiveSheet(); 
+
 function columnToLetter(column) {
   let temp, letter = '';
   while (column > 0) {
@@ -27,16 +31,12 @@ function letterToColumn(letter) {
 }
 
 function getSingleCell(toRead) {
-  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  const sheet = spreadsheet.getActiveSheet(); 
   const targetCell = sheet.getRange(toRead.getCell());
 
   return unmerge(targetCell);
 }
 
 function getCells(leftTopCorner, rightBottomCorner){
-  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  const sheet = spreadsheet.getActiveSheet(); 
   
   const rangeString = leftTopCorner.getCell() + ":" + rightBottomCorner.getCell();
   const targetRange = sheet.getRange(rangeString);
@@ -62,8 +62,6 @@ function getRow(row, first = "A", max) {
   if (typeof first !== 'string' || typeof max !== 'string') {
     throw new Error(`Error en getRow: Los límites de las columnas deben ser letras (Strings). Se recibió first: '${first}', max: '${max}'.`);
   }
-
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet(); 
 
   const maxColumns = sheet.getLastColumn();
   const maxColumnsLet = columnToLetter(maxColumns); // Faltaba el const/let aquí
@@ -92,7 +90,6 @@ function getRowUntilBlank(row, first = "A", blanksCount = 1) {
     throw new Error(`Error en getRow: Los límites de las columnas deben ser letras (Strings). Se recibió first: '${first}'.`);
   }
 
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   const maxCols = sheet.getMaxColumns();
   const toReturn = new RangeMatrix([[]]);
   let col = letterToColumn(first);
@@ -122,7 +119,6 @@ function getFullRow(row, first = "A"){
     throw new Error(`Error en getFullRow: La columna de inicio debe ser una letra. Se recibió: '${first}'.`);
   }
 
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet(); 
   const maxColumns = sheet.getLastColumn();
 
   return getRow(row, first, columnToLetter(maxColumns));
@@ -132,8 +128,6 @@ function getColumn(colum, first = 1, max) {
   if (typeof colum !== 'string') {
     throw new Error(`Error en getColumn: El identificador de columna debe ser una letra (ej. "C"). Se recibió: '${colum}'.`);
   }
-
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet(); 
   
   const maxRows = sheet.getLastRow();
   if(maxRows < max){
@@ -154,7 +148,6 @@ function getColumnUntilBlank(colum, first = 1, blanksCount = 1) {
     throw new Error(`Error en getColumnUntilBlank: La columna debe ser una letra (String). Se recibió colum: '${colum}'.`);
   }
 
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   const maxRows = sheet.getMaxRows();
   const cells = []; 
   
@@ -188,7 +181,6 @@ function getFullCol(col, first = 1){
     throw new Error(`Error en getFullCol: La columna debe ser una letra. Se recibió: '${col}'.`);
   }
 
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet(); 
   const maxRows = sheet.getLastRow();
 
   return getColumn(col, first, maxRows);
